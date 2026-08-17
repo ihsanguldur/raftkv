@@ -1,17 +1,12 @@
-# Binaries
 /bin/
 *.exe
 *.test
 
-# Go workspace
 go.work
 go.work.sum
 
-# IDE
 .idea/
 
-# Raft persistence data (Faz 4+)
 /data/
 
-# Cluster test logs
 /logs/
