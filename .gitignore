@@ -12,3 +12,6 @@ go.work.sum
 
 # Raft persistence data (Faz 4+)
 /data/
+
+# Cluster test logs
+/logs/
