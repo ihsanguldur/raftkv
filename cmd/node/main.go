@@ -24,9 +24,19 @@ func main() {
 	}
 
 	store := kv.NewStore()
-	svc := service.NewKVService(store)
+
+	applyFn := func(cmd raft.Command) {
+		switch cmd.Op {
+		case "put":
+			store.Set(cmd.Key, cmd.Value)
+		case "delete":
+			store.Delete(cmd.Key)
+		}
+	}
+
+	node := raft.NewNode(*id, peers, applyFn)
+	svc := service.NewKVService(store, node)
 	handler := api.NewHandler(svc)
-	node := raft.NewNode(*id, peers)
 
 	app := fiber.New()
 	api.RegisterRoutes(app, handler)
@@ -34,7 +44,7 @@ func main() {
 
 	node.Start()
 
-	log.Printf("raftkv node listenig on port :%s", *port)
+	log.Printf("raftkv node %s listening on port :%s", *id, *port)
 	if err := app.Listen(":" + *port); err != nil {
 		log.Fatal(err)
 	}

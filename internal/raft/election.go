@@ -45,6 +45,8 @@ func (n *Node) startElection() {
 	n.votedFor = n.id
 	n.electionReset = time.Now()
 	peers := n.peers
+	lastLogIndex := n.lastLogIndex()
+	lastLogTerm := n.lastLogTerm()
 	n.mu.Unlock()
 
 	var votes int32 = 1
@@ -55,7 +57,12 @@ func (n *Node) startElection() {
 		go func(peer string) {
 			defer wg.Done()
 
-			reply, err := n.sendRequestVote(peer, RequestVoteArgs{Term: term, CandidateID: n.id})
+			reply, err := n.sendRequestVote(peer, RequestVoteArgs{
+				Term:         term,
+				CandidateID:  n.id,
+				LastLogIndex: lastLogIndex,
+				LastLogTerm:  lastLogTerm,
+			})
 			if err != nil {
 				return
 			}
@@ -92,4 +99,5 @@ func (n *Node) startElection() {
 
 func (n *Node) Start() {
 	go n.runElectionTimer()
+	go n.runApplyLoop()
 }

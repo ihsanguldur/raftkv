@@ -21,9 +21,23 @@ func (s State) String() string {
 	}
 }
 
+type Command struct {
+	Op    string
+	Key   string
+	Value string
+}
+
+type LogEntry struct {
+	Term    int
+	Index   int
+	Command Command
+}
+
 type RequestVoteArgs struct {
-	Term        int    `json:"term"`
-	CandidateID string `json:"candidate_id"`
+	Term         int    `json:"term"`
+	CandidateID  string `json:"candidate_id"`
+	LastLogIndex int    `json:"last_log_index"`
+	LastLogTerm  int    `json:"last_log_term"`
 }
 
 type RequestVoteReply struct {
@@ -32,8 +46,12 @@ type RequestVoteReply struct {
 }
 
 type AppendEntriesArgs struct {
-	Term     int    `json:"term"`
-	LeaderID string `json:"leader_id"`
+	Term         int        `json:"term"`
+	LeaderID     string     `json:"leader_id"`
+	PrevLogIndex int        `json:"prev_log_index"`
+	PrevLogTerm  int        `json:"prev_log_term"`
+	Entries      []LogEntry `json:"entries"`
+	LeaderCommit int        `json:"leader_commit"`
 }
 
 type AppendEntriesReply struct {
