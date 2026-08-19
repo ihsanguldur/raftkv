@@ -13,6 +13,10 @@ func writeError(c *fiber.Ctx, err error) error {
 		return c.Status(fiber.StatusNotFound).JSON(errorResponse{Error: err.Error()})
 	case errors.Is(err, service.ErrKeyRequired), errors.Is(err, service.ErrValueRequired):
 		return c.Status(fiber.StatusBadRequest).JSON(errorResponse{Error: err.Error()})
+	case errors.Is(err, service.ErrNotLeader):
+		return c.Status(fiber.StatusConflict).JSON(errorResponse{Error: err.Error()})
+	case errors.Is(err, service.ErrTimeout):
+		return c.Status(fiber.StatusServiceUnavailable).JSON(errorResponse{Error: err.Error()})
 	default:
 		return c.Status(fiber.StatusInternalServerError).JSON(errorResponse{Error: "internal server error"})
 	}
