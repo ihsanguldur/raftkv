@@ -24,6 +24,7 @@ func (n *Node) Propose(cmd Command) error {
 		Command: cmd,
 	}
 	n.appendEntry(entry)
+	n.persist()
 
 	ch := make(chan struct{})
 	n.notifyCh[entry.Index] = ch

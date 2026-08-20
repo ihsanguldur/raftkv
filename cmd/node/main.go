@@ -16,6 +16,7 @@ func main() {
 	port := flag.String("port", "8080", "HTTP port to listen on")
 	id := flag.String("id", "", "unique node id")
 	peersFlag := flag.String("peers", "", "comma-separated list of peer host:port addresses")
+	dataDir := flag.String("data-dir", "data", "directory for persisted raft state")
 	flag.Parse()
 
 	var peers []string
@@ -34,7 +35,7 @@ func main() {
 		}
 	}
 
-	node := raft.NewNode(*id, peers, applyFn)
+	node := raft.NewNode(*id, peers, applyFn, *dataDir)
 	svc := service.NewKVService(store, node)
 	handler := api.NewHandler(svc)
 

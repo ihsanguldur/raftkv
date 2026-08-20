@@ -38,5 +38,8 @@ func (n *Node) entriesFrom(index int) []LogEntry {
 	if index <= 0 || index > len(n.log) {
 		return nil
 	}
-	return n.log[index-1:]
+	src := n.log[index-1:]
+	dst := make([]LogEntry, len(src))
+	copy(dst, src)
+	return dst
 }

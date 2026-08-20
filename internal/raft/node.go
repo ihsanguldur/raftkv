@@ -28,11 +28,13 @@ type Node struct {
 
 	applyFn func(Command)
 
+	dataDir string
+
 	httpClient *http.Client
 }
 
-func NewNode(id string, peers []string, applyFn func(Command)) *Node {
-	return &Node{
+func NewNode(id string, peers []string, applyFn func(Command), dataDir string) *Node {
+	n := &Node{
 		id:          id,
 		peers:       peers,
 		currentTerm: 0,
@@ -43,8 +45,13 @@ func NewNode(id string, peers []string, applyFn func(Command)) *Node {
 		lastApplied: 0,
 		notifyCh:    make(map[int]chan struct{}),
 		applyFn:     applyFn,
+		dataDir:     dataDir,
 		httpClient: &http.Client{
 			Timeout: 200 * time.Millisecond,
 		},
 	}
+
+	n.loadPersisted()
+
+	return n
 }
