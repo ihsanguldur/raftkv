@@ -74,6 +74,7 @@ func (n *Node) replicateToPeer(peer, id string, term int) {
 		n.currentTerm = reply.Term
 		n.state = Follower
 		n.votedFor = ""
+		n.persist()
 		return
 	}
 

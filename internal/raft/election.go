@@ -44,6 +44,7 @@ func (n *Node) startElection() {
 	term := n.currentTerm
 	n.votedFor = n.id
 	n.electionReset = time.Now()
+	n.persist()
 	peers := n.peers
 	lastLogIndex := n.lastLogIndex()
 	lastLogTerm := n.lastLogTerm()
@@ -74,6 +75,7 @@ func (n *Node) startElection() {
 				n.currentTerm = reply.Term
 				n.state = Follower
 				n.votedFor = ""
+				n.persist()
 				return
 			}
 

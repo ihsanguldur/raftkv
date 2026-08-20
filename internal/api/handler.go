@@ -1,6 +1,8 @@
 package api
 
 import (
+	"strings"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/ihsanguldur/raftkv/internal/service"
 )
@@ -27,14 +29,16 @@ func (h *Handler) Put(c *fiber.Ctx) error {
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(errorResponse{Error: "invalid body"})
 	}
-	if err := h.svc.Put(c.Params("key"), req.Value); err != nil {
+	key := strings.Clone(c.Params("key"))
+	if err := h.svc.Put(key, req.Value); err != nil {
 		return writeError(c, err)
 	}
 	return c.SendStatus(fiber.StatusOK)
 }
 
 func (h *Handler) Delete(c *fiber.Ctx) error {
-	if err := h.svc.Delete(c.Params("key")); err != nil {
+	key := strings.Clone(c.Params("key"))
+	if err := h.svc.Delete(key); err != nil {
 		return writeError(c, err)
 	}
 	return c.SendStatus(fiber.StatusOK)
