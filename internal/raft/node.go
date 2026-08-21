@@ -10,7 +10,10 @@ type Node struct {
 	mu sync.Mutex
 
 	id    string
+	addr  string
 	peers []string
+
+	leaderAddr string
 
 	currentTerm   int
 	votedFor      string
@@ -33,9 +36,10 @@ type Node struct {
 	httpClient *http.Client
 }
 
-func NewNode(id string, peers []string, applyFn func(Command), dataDir string) *Node {
+func NewNode(id, addr string, peers []string, applyFn func(Command), dataDir string) *Node {
 	n := &Node{
 		id:          id,
+		addr:        addr,
 		peers:       peers,
 		currentTerm: 0,
 		votedFor:    "",
@@ -54,4 +58,10 @@ func NewNode(id string, peers []string, applyFn func(Command), dataDir string) *
 	n.loadPersisted()
 
 	return n
+}
+
+func (n *Node) LeaderAddr() string {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+	return n.leaderAddr
 }

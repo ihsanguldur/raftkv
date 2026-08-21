@@ -53,11 +53,13 @@ func (n *Node) replicateToPeer(peer, id string, term int) {
 	prevLogTerm := n.termAtIndex(prevLogIndex)
 	entries := n.entriesFrom(nextIdx)
 	leaderCommit := n.commitIndex
+	addr := n.addr
 	n.mu.Unlock()
 
 	reply, err := n.sendAppendEntries(peer, AppendEntriesArgs{
 		Term:         term,
 		LeaderID:     id,
+		LeaderAddr:   addr,
 		PrevLogIndex: prevLogIndex,
 		PrevLogTerm:  prevLogTerm,
 		Entries:      entries,

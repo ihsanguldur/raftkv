@@ -15,9 +15,15 @@ import (
 func main() {
 	port := flag.String("port", "8080", "HTTP port to listen on")
 	id := flag.String("id", "", "unique node id")
+	addrFlag := flag.String("addr", "", "own host:port as seen by peers/clients (defaults to localhost:<port>)")
 	peersFlag := flag.String("peers", "", "comma-separated list of peer host:port addresses")
 	dataDir := flag.String("data-dir", "data", "directory for persisted raft state")
 	flag.Parse()
+
+	addr := *addrFlag
+	if addr == "" {
+		addr = "localhost:" + *port
+	}
 
 	var peers []string
 	if *peersFlag != "" {
@@ -35,7 +41,7 @@ func main() {
 		}
 	}
 
-	node := raft.NewNode(*id, peers, applyFn, *dataDir)
+	node := raft.NewNode(*id, addr, peers, applyFn, *dataDir)
 	svc := service.NewKVService(store, node)
 	handler := api.NewHandler(svc)
 
