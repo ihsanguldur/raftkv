@@ -28,6 +28,10 @@ func NewKVService(store *kv.Store, node *raft.Node) *KVService {
 	}
 }
 
+func (s *KVService) LeaderAddr() string {
+	return s.node.LeaderAddr()
+}
+
 func (s *KVService) Get(key string) (string, error) {
 	key = strings.TrimSpace(key)
 	if key == "" {

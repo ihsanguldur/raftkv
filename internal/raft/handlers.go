@@ -44,6 +44,8 @@ func (n *Node) HandleAppendEntries(args AppendEntriesArgs) AppendEntriesReply {
 		return AppendEntriesReply{Term: n.currentTerm, Success: false}
 	}
 
+	n.leaderAddr = args.LeaderAddr
+
 	changed := false
 	if args.Term > n.currentTerm {
 		n.currentTerm = args.Term

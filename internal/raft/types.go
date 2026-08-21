@@ -48,6 +48,7 @@ type RequestVoteReply struct {
 type AppendEntriesArgs struct {
 	Term         int        `json:"term"`
 	LeaderID     string     `json:"leader_id"`
+	LeaderAddr   string     `json:"leader_addr"`
 	PrevLogIndex int        `json:"prev_log_index"`
 	PrevLogTerm  int        `json:"prev_log_term"`
 	Entries      []LogEntry `json:"entries"`
